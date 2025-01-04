@@ -10,8 +10,19 @@
 #include <EF_UART_regs.h>
 #include <stdint.h>
 #include <stdbool.h>
+#include <version.h>
+
+#define EF_UART_API_VERSION 0x0001
+#define EF_UART_DRV_VERSION 0x0001
 
 enum parity_type {NONE = 0, ODD = 1, EVEN = 2, STICKY_0 = 4, STICKY_1 = 5};
+
+//! returns the version of the UART driver
+    /*!
+      \return DRIVER_VERSION structure which contains the version of the driver
+    */
+DRIVER_VERSION EF_UART_getVersion(void);
+
 
 void EF_UART_setGclkEnable (uint32_t uart_base, int value);
 
