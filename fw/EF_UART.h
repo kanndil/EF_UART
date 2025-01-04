@@ -376,4 +376,50 @@ void EF_UART_writeChar(uint32_t uart_base, char data);
     */
 int EF_UART_readChar(uint32_t uart_base);
 
+
+typedef struct _EF_DRIVER_UART {
+    DRIVER_VERSION (*getVersion)(void);
+    void (*initiate)(uint32_t uart_base);
+    void (*setGclkEnable)(int32_t value);
+    void (*enable)(void);
+    void (*disable)(void);
+    void (*enableRx)(void);
+    void (*disableRx)(void);
+    void (*enableTx)(void);
+    void (*disableTx)(void);
+    void (*enableLoopBack)(void);
+    void (*disableLoopBack)(void);
+    void (*enableGlitchFilter)(void);
+    void (*disableGlitchFilter)(void);
+    void (*setCTRL)(int32_t value);
+    int32_t (*getCTRL)(void);
+    void (*setDataSize)(int32_t value);
+    void (*setTwoStopBitsSelect)(bool is_two_bits);
+    void (*setParityType)(enum parity_type parity);
+    void (*setTimeoutBits)(int32_t value);
+    void (*setConfig)(int32_t config);
+    int32_t (*getConfig)(void);
+    void (*setRxFIFOThreshold)(int32_t threshold);
+    int32_t (*getRxFIFOThreshold)(void);
+    void (*setTxFIFOThreshold)(int32_t threshold);
+    int32_t (*getTxFIFOThreshold)(void);
+    void (*setMatchData)(int32_t matchData);
+    int32_t (*getMatchData)(void);
+    int32_t (*getTxCount)(void);
+    int32_t (*getRxCount)(void);
+    void (*setPrescaler)(int32_t prescaler);
+    int32_t (*getPrescaler)(void);
+    int32_t (*getRIS)(void);
+    int32_t (*getMIS)(void);
+    void (*setIM)(int32_t mask);
+    int32_t (*getIM)(void);
+    void (*setICR)(int32_t mask);
+    void (*writeCharArr)(const char *char_arr);
+    void (*writeChar)(char data);
+    int32_t (*readChar)(void);
+} EF_DRIVER_UART;
+
+
+
+
 #endif
