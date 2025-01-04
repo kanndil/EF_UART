@@ -69,7 +69,7 @@
 #define EF_UART_OR_FLAG	0x100
 #define EF_UART_RTO_FLAG	0x200
 
-typedef struct _EF_UART_TYPE_ {
+typedef struct _EF_UART_REGS_ {
 	__R 	RXDATA;
 	__W 	TXDATA;
 	__W 	PR;
@@ -91,7 +91,7 @@ typedef struct _EF_UART_TYPE_ {
 	__R 	RIS;
 	__W 	IC;
 	__W 	GCLK;
-} EF_UART_TYPE;
+} EF_UART_REGS;
 
 #endif
 
