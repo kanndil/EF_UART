@@ -377,46 +377,60 @@ void EF_UART_writeChar(uint32_t uart_base, char data);
 int EF_UART_readChar(uint32_t uart_base);
 
 
-typedef struct _EF_DRIVER_UART {
-    DRIVER_VERSION (*getVersion)(void);
-    void (*initiate)(uint32_t uart_base);
-    void (*setGclkEnable)(int32_t value);
-    void (*enable)(void);
-    void (*disable)(void);
-    void (*enableRx)(void);
-    void (*disableRx)(void);
-    void (*enableTx)(void);
-    void (*disableTx)(void);
-    void (*enableLoopBack)(void);
-    void (*disableLoopBack)(void);
-    void (*enableGlitchFilter)(void);
-    void (*disableGlitchFilter)(void);
-    void (*setCTRL)(int32_t value);
-    int32_t (*getCTRL)(void);
-    void (*setDataSize)(int32_t value);
-    void (*setTwoStopBitsSelect)(bool is_two_bits);
-    void (*setParityType)(enum parity_type parity);
-    void (*setTimeoutBits)(int32_t value);
-    void (*setConfig)(int32_t config);
-    int32_t (*getConfig)(void);
-    void (*setRxFIFOThreshold)(int32_t threshold);
-    int32_t (*getRxFIFOThreshold)(void);
-    void (*setTxFIFOThreshold)(int32_t threshold);
-    int32_t (*getTxFIFOThreshold)(void);
-    void (*setMatchData)(int32_t matchData);
-    int32_t (*getMatchData)(void);
-    int32_t (*getTxCount)(void);
-    int32_t (*getRxCount)(void);
-    void (*setPrescaler)(int32_t prescaler);
-    int32_t (*getPrescaler)(void);
-    int32_t (*getRIS)(void);
-    int32_t (*getMIS)(void);
-    void (*setIM)(int32_t mask);
-    int32_t (*getIM)(void);
-    void (*setICR)(int32_t mask);
-    void (*writeCharArr)(const char *char_arr);
-    void (*writeChar)(char data);
-    int32_t (*readChar)(void);
+
+
+/**
+ * @brief UART Driver Access Structure
+ *
+ * This structure defines the UART driver.
+ *
+ * The driver structure contains function pointers to the driver functions.
+ *
+ * The driver functions are used to interact with the UART hardware.
+ */
+typedef struct _EF_DRIVER_UART_ {
+    EF_UART_REGS *UART_REGS;                            ///< Pointer to the UART registers structure. This is the base address of the UART registers.
+                                                        ///< This pointer should be set by the driver initialization function \ref EF_UART_initiate.
+                                                        
+    DRIVER_VERSION (*getVersion)(void);                 ///< Pointer to /ref EF_UART_getVersion function: Function to get the version of the UART APIs and driver.
+    void (*initiate)(uint32_t uart_base);               ///< Pointer to /ref EF_UART_initiate function: Function to initiate the UART driver.
+    void (*enable)(void);                               ///< Pointer to /ref EF_UART_enable function: Function to enable the UART.
+    void (*disable)(void);                              ///< Pointer to /ref EF_UART_disable function: Function to disable the UART.
+    void (*setGclkEnable)(int32_t value);               ///< Pointer to /ref EF_UART_setGclkEnable function: Function to enable or disable the Clock Gating.
+    void (*enableRx)(void);                             ///< Pointer to /ref EF_UART_enableRx function: Function to enable the UART RX.
+    void (*disableRx)(void);                            ///< Pointer to /ref EF_UART_disableRx function: Function to disable the UART RX.
+    void (*enableTx)(void);                             ///< Pointer to /ref EF_UART_enableTx function: Function to enable the UART TX.
+    void (*disableTx)(void);                            ///< Pointer to /ref EF_UART_disableTx function: Function to disable the UART TX.
+    void (*enableLoopBack)(void);                       ///< Pointer to /ref EF_UART_enableLoopBack function: Function to enable the UART Loopback.
+    void (*disableLoopBack)(void);                      ///< Pointer to /ref EF_UART_disableLoopBack function: Function to disable the UART Loopback.
+    void (*enableGlitchFilter)(void);                   ///< Pointer to /ref EF_UART_enableGlitchFilter function: Function to enable the UART Glitch Filter.
+    void (*disableGlitchFilter)(void);                  ///< Pointer to /ref EF_UART_disableGlitchFilter function: Function to disable the UART Glitch Filter.
+    void (*setCTRL)(int32_t value);                     ///< Pointer to /ref EF_UART_setCTRL function: Function to set the UART Control Register.
+    int32_t (*getCTRL)(void);                           ///< Pointer to /ref EF_UART_getCTRL function: Function to get the UART Control Register.
+    void (*setDataSize)(int32_t value);                 ///< Pointer to /ref EF_UART_setDataSize function: Function to set the Data Size.
+    void (*setTwoStopBitsSelect)(bool is_two_bits);     ///< Pointer to /ref EF_UART_setTwoStopBitsSelect function: Function to set the Two Stop Bits Select.
+    void (*setParityType)(enum parity_type parity);     ///< Pointer to /ref EF_UART_setParityType function: Function to set the Parity Type.
+    void (*setTimeoutBits)(int32_t value);              ///< Pointer to /ref EF_UART_setTimeoutBits function: Function to set the Timeout Bits.
+    void (*setConfig)(int32_t config);                  ///< Pointer to /ref EF_UART_setConfig function: Function to set the Configuration Register.
+    int32_t (*getConfig)(void);                         ///< Pointer to /ref EF_UART_getConfig function: Function to get the Configuration Register.
+    void (*setRxFIFOThreshold)(int32_t threshold);      ///< Pointer to /ref EF_UART_setRxFIFOThreshold function: Function to set the RX FIFO Threshold.
+    int32_t (*getRxFIFOThreshold)(void);                ///< Pointer to /ref EF_UART_getRxFIFOThreshold function: Function to get the RX FIFO Threshold.
+    void (*setTxFIFOThreshold)(int32_t threshold);      ///< Pointer to /ref EF_UART_setTxFIFOThreshold function: Function to set the TX FIFO Threshold.
+    int32_t (*getTxFIFOThreshold)(void);                ///< Pointer to /ref EF_UART_getTxFIFOThreshold function: Function to get the TX FIFO Threshold.
+    void (*setMatchData)(int32_t matchData);            ///< Pointer to /ref EF_UART_setMatchData function: Function to set the Match Data.
+    int32_t (*getMatchData)(void);                      ///< Pointer to /ref EF_UART_getMatchData function: Function to get the Match Data.
+    int32_t (*getTxCount)(void);                        ///< Pointer to /ref EF_UART_getTxCount function: Function to get the TX FIFO Level, the number of bytes in the FIFO.
+    int32_t (*getRxCount)(void);                        ///< Pointer to /ref EF_UART_getRxCount function: Function to get the RX FIFO Level, the number of bytes in the FIFO.
+    void (*setPrescaler)(int32_t prescaler);            ///< Pointer to /ref EF_UART_setPrescaler function: Function to set the Prescaler.
+    int32_t (*getPrescaler)(void);                      ///< Pointer to /ref EF_UART_getPrescaler function: Function to get the Prescaler.
+    int32_t (*getRIS)(void);                            ///< Pointer to /ref EF_UART_getRIS function: Function to get the Raw Interrupt Status Register.        
+    int32_t (*getMIS)(void);                            ///< Pointer to /ref EF_UART_getMIS function: Function to get the Masked Interrupt Status Register.
+    void (*setIM)(int32_t mask);                        ///< Pointer to /ref EF_UART_setIM function: Function to set the Interrupts Masking Register.
+    int32_t (*getIM)(void);                             ///< Pointer to /ref EF_UART_getIM function: Function to get the Interrupts Masking Register.
+    void (*setICR)(int32_t mask);                       ///< Pointer to /ref EF_UART_setICR function: Function to set the Interrupts Clear Register.
+    void (*writeCharArr)(const char *char_arr);         ///< Pointer to /ref EF_UART_writeCharArr function: Function to transmit an array of characters through UART.
+    void (*writeChar)(char data);                       ///< Pointer to /ref EF_UART_writeChar function: Function to transmit a single character through UART.
+    int32_t (*readChar)(void);                          ///< Pointer to /ref EF_UART_readChar function: Function to receive a single character through UART.
 } EF_DRIVER_UART;
 
 
