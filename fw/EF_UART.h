@@ -26,12 +26,6 @@ enum parity_type {NONE = 0, ODD = 1, EVEN = 2, STICKY_0 = 4, STICKY_1 = 5};
     \brief  Get the version of the UART APIs and driver.
     \return \ref DRIVER_VERSION structure which contains the version of the driver.
 
-    \fn     void EF_UART_initiate(uint32_t uart_base)
-    \brief  Initialize the UART driver. 
-            Given the base memory address of the UART registers, this function initializes the UART registers structure. \ref EF_UART_REGS.
-    \param  uart_base The base memory address of UART registers.
-    \return none
-
     \fn     void EF_UART_enable(void)
     \brief  Enable UART by setting "en" bit in the control register to 1.
     \return none
@@ -270,10 +264,8 @@ enum parity_type {NONE = 0, ODD = 1, EVEN = 2, STICKY_0 = 4, STICKY_1 = 5};
  */
 typedef struct _EF_DRIVER_UART_ {
     EF_UART_REGS *UART_REGS;                            ///< Pointer to the UART registers structure. This is the base address of the UART registers.
-                                                        ///< This pointer should be set by the driver initialization function \ref EF_UART_initialize.
 
     DRIVER_VERSION (*getVersion)(void);                 ///< Pointer to /ref EF_UART_getVersion function: Function to get the version of the UART APIs and driver.
-    void (*initialize)(uint32_t uart_base);             ///< Pointer to /ref EF_UART_initialize function: Function to initialize the UART driver.
     void (*enable)(void);                               ///< Pointer to /ref EF_UART_enable function: Function to enable the UART.
     void (*disable)(void);                              ///< Pointer to /ref EF_UART_disable function: Function to disable the UART.
     void (*setGclkEnable)(uint32_t value);               ///< Pointer to /ref EF_UART_setGclkEnable function: Function to enable or disable the Clock Gating.
