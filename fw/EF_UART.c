@@ -7,242 +7,250 @@
 #define EF_UART_C
 
 #include <EF_UART.h>
+#include <version.h>
 
-void EF_UART_setGclkEnable (uint32_t uart_base, int value){
-    EF_UART_REGS* uart = (EF_UART_REGS*)uart_base;
-    uart->GCLK = value;
+#define EF_UART0_BASE ((uint32_t) 0x10000000)       // Base address of the UART registers
+                                                    // This is a dummy address, the actual address should be defined in the linker script
+
+
+#define EF_UART_REG_SPACE ((EF_UART_REGS*)EF_UART0_BASE)
+
+
+/* Driver Version */
+static const DRIVER_VERSION DriverVersion = {
+    .api = EF_UART_API_VERSION,
+    .drv = EF_UART_DRV_VERSION
+};
+
+
+//
+//   Functions
+//
+
+
+static DRIVER_VERSION EF_UART_getVersion(void){
+
+    return DriverVersion;
 }
 
-void EF_UART_enable(uint32_t uart_base){
-   
-    EF_UART_REGS* uart = (EF_UART_REGS*)uart_base;
+static void EF_UART_enable(void){
 
     // set the enable bit to 1 at the specified offset
-    uart->CTRL |= (1 << EF_UART_CTRL_REG_EN_BIT);
+    EF_UART_REG_SPACE->CTRL |= (1 << EF_UART_CTRL_REG_EN_BIT);
+    return;
 }
 
-void EF_UART_disable(uint32_t uart_base){
-   
-    EF_UART_REGS* uart = (EF_UART_REGS*)uart_base;
+
+static void EF_UART_setGclkEnable (uint32_t value){
+
+    EF_UART_REG_SPACE->GCLK = value;
+    return;
+}
+
+
+static void EF_UART_disable(void){
 
     // Clear the enable bit using the specified  mask
-    uart->CTRL &= ~EF_UART_CTRL_REG_EN_MASK;
+    EF_UART_REG_SPACE->CTRL &= ~EF_UART_CTRL_REG_EN_MASK;
+    return;
 }
 
-void EF_UART_enableRx(uint32_t uart_base){
+
+static void EF_UART_enableRx(void){
     
-    EF_UART_REGS* uart = (EF_UART_REGS*)uart_base;
+    // set the enable bit to 1 at the specified offset
+    EF_UART_REG_SPACE->CTRL |= (1 << EF_UART_CTRL_REG_RXEN_BIT);
+    return;
+}
+
+
+static void EF_UART_disableRx(void){
+    
+    // Clear the enable bit using the specified  mask
+    EF_UART_REG_SPACE->CTRL &= ~EF_UART_CTRL_REG_RXEN_MASK;
+    return;
+}
+
+
+static void EF_UART_enableTx(void){
 
     // set the enable bit to 1 at the specified offset
-    uart->CTRL |= (1 << EF_UART_CTRL_REG_RXEN_BIT);
+    EF_UART_REG_SPACE->CTRL |= (1 << EF_UART_CTRL_REG_TXEN_BIT);
+    return;
 }
 
-void EF_UART_disableRx(uint32_t uart_base){
-    
-    EF_UART_REGS* uart = (EF_UART_REGS*)uart_base;
+
+static void EF_UART_disableTx(void){
 
     // Clear the enable bit using the specified  mask
-    uart->CTRL &= ~EF_UART_CTRL_REG_RXEN_MASK;
+    EF_UART_REG_SPACE->CTRL &= ~EF_UART_CTRL_REG_TXEN_MASK;
+    return;
 }
 
-void EF_UART_enableTx(uint32_t uart_base){
-    
-    EF_UART_REGS* uart = (EF_UART_REGS*)uart_base;
+
+static void EF_UART_enableLoopBack(void){
 
     // set the enable bit to 1 at the specified offset
-    uart->CTRL |= (1 << EF_UART_CTRL_REG_TXEN_BIT);
+    EF_UART_REG_SPACE->CTRL |= (1 << EF_UART_CTRL_REG_LPEN_BIT);
+    return;
 }
 
-void EF_UART_disableTx(uint32_t uart_base){
-    
-    EF_UART_REGS* uart = (EF_UART_REGS*)uart_base;
+
+static void EF_UART_disableLoopBack(void){
 
     // Clear the enable bit using the specified  mask
-    uart->CTRL &= ~EF_UART_CTRL_REG_TXEN_MASK;
+    EF_UART_REG_SPACE->CTRL &= ~EF_UART_CTRL_REG_LPEN_MASK;
+    return;
 }
 
-void EF_UART_enableLoopBack(uint32_t uart_base){
-    
-    EF_UART_REGS* uart = (EF_UART_REGS*)uart_base;
+
+static void EF_UART_enableGlitchFilter(void){
+
+    // Clear the enable bit using the specified  mask
+    EF_UART_REG_SPACE->CTRL &= ~EF_UART_CTRL_REG_GFEN_MASK;
 
     // set the enable bit to 1 at the specified offset
-    uart->CTRL |= (1 << EF_UART_CTRL_REG_LPEN_BIT);
+    EF_UART_REG_SPACE->CTRL |= (1 << EF_UART_CTRL_REG_GFEN_BIT);
+    return;
 }
 
-void EF_UART_disableLoopBack(uint32_t uart_base){
-    
-    EF_UART_REGS* uart = (EF_UART_REGS*)uart_base;
+
+static void EF_UART_disableGlitchFilter(void){
 
     // Clear the enable bit using the specified  mask
-    uart->CTRL &= ~EF_UART_CTRL_REG_LPEN_MASK;
-}
-
-void EF_UART_enableGlitchFilter(uint32_t uart_base){
-    
-    EF_UART_REGS* uart = (EF_UART_REGS*)uart_base;
-
-    // Clear the enable bit using the specified  mask
-    uart->CTRL &= ~EF_UART_CTRL_REG_GFEN_MASK;
-
-    // set the enable bit to 1 at the specified offset
-    uart->CTRL |= (1 << EF_UART_CTRL_REG_GFEN_BIT);
-}
-
-void EF_UART_disableGlitchFilter(uint32_t uart_base){
-    
-    EF_UART_REGS* uart = (EF_UART_REGS*)uart_base;
-
-    // Clear the enable bit using the specified  mask
-    uart->CTRL &= ~EF_UART_CTRL_REG_GFEN_MASK;
-}
-
-void EF_UART_setCTRL(uint32_t uart_base, int value){
-
-    EF_UART_REGS* uart = (EF_UART_REGS*)uart_base;
-
-    uart->CTRL = value;
-    
-}
-
-int EF_UART_getCTRL(uint32_t uart_base){
-
-    EF_UART_REGS* uart = (EF_UART_REGS*)uart_base;
-
-    return (uart->CTRL);
-}
-
-void EF_UART_setPrescaler(uint32_t uart_base, int prescaler){
-
-    EF_UART_REGS* uart = (EF_UART_REGS*)uart_base;
-    uart->PR = prescaler;
-}
-
-int EF_UART_getPrescaler(uint32_t uart_base){
-
-   EF_UART_REGS* uart = (EF_UART_REGS*)uart_base;
-    return (uart->PR);
+    EF_UART_REG_SPACE->CTRL &= ~EF_UART_CTRL_REG_GFEN_MASK;
+    return;
 }
 
 
-void EF_UART_setDataSize(uint32_t uart_base, int value){
+static void EF_UART_setCTRL(uint32_t value){
 
-    EF_UART_REGS* uart = (EF_UART_REGS*)uart_base;
+    EF_UART_REG_SPACE->CTRL = value;
+    return;
+}
+
+
+static uint32_t EF_UART_getCTRL(void){
+
+    return (EF_UART_REG_SPACE->CTRL);
+}
+
+
+static void EF_UART_setDataSize(uint32_t value){
 
     // Clear the field bits in the register using the defined mask
-    uart->CFG &= ~EF_UART_CFG_REG_WLEN_MASK;
+    EF_UART_REG_SPACE->CFG &= ~EF_UART_CFG_REG_WLEN_MASK;
 
     // Set the bits with the given value at the defined offset
-    uart->CFG |= ((value << EF_UART_CFG_REG_WLEN_BIT) & EF_UART_CFG_REG_WLEN_MASK);
+    EF_UART_REG_SPACE->CFG |= ((value << EF_UART_CFG_REG_WLEN_BIT) & EF_UART_CFG_REG_WLEN_MASK);
+    return;
 }
 
-void EF_UART_setTwoStopBitsSelect(uint32_t uart_base, bool is_two_bits){
 
-     EF_UART_REGS* uart = (EF_UART_REGS*)uart_base;
-     
+static void EF_UART_setPrescaler(uint32_t prescaler){
+
+    EF_UART_REG_SPACE->PR = prescaler;
+    return;
+}
+
+
+static uint32_t EF_UART_getPrescaler(void){
+
+    return (EF_UART_REG_SPACE->PR);
+}
+
+
+static void EF_UART_setTwoStopBitsSelect(bool is_two_bits){
+
     if (is_two_bits){
 
         // set the enable bit to 1 at the specified offset
-        uart->CFG |= (1 << EF_UART_CFG_REG_STP2_BIT);
+        EF_UART_REG_SPACE->CFG |= (1 << EF_UART_CFG_REG_STP2_BIT);
 
     }
     else {
         // Clear the enable bit using the specified  mask
-        uart->CFG &= ~EF_UART_CFG_REG_STP2_MASK;
+        EF_UART_REG_SPACE->CFG &= ~EF_UART_CFG_REG_STP2_MASK;
     }
+    return;
 }
 
-void EF_UART_setParityType(uint32_t uart_base, enum parity_type parity){
-
-     EF_UART_REGS* uart = (EF_UART_REGS*)uart_base;
+static void EF_UART_setParityType(enum parity_type parity){
 
     // Clear the field bits in the register using the defined mask
-    uart->CFG &= ~EF_UART_CFG_REG_PARITY_MASK;
+    EF_UART_REG_SPACE->CFG &= ~EF_UART_CFG_REG_PARITY_MASK;
 
     // Set the bits with the given value at the defined offset
-    uart->CFG |= ((parity << EF_UART_CFG_REG_PARITY_BIT) & EF_UART_CFG_REG_PARITY_MASK);
+    EF_UART_REG_SPACE->CFG |= ((parity << EF_UART_CFG_REG_PARITY_BIT) & EF_UART_CFG_REG_PARITY_MASK);
+    return;
 }
 
-void EF_UART_setTimeoutBits(uint32_t uart_base, int value){
-
-     EF_UART_REGS* uart = (EF_UART_REGS*)uart_base;
+static void EF_UART_setTimeoutBits(uint32_t value){
 
     // Clear the field bits in the register using the defined mask
-    uart->CFG &= ~EF_UART_CFG_REG_TIMEOUT_MASK;
+    EF_UART_REG_SPACE->CFG &= ~EF_UART_CFG_REG_TIMEOUT_MASK;
 
     // Set the bits with the given value at the defined offset
-    uart->CFG |= ((value << EF_UART_CFG_REG_TIMEOUT_BIT) & EF_UART_CFG_REG_TIMEOUT_MASK);
+    EF_UART_REG_SPACE->CFG |= ((value << EF_UART_CFG_REG_TIMEOUT_BIT) & EF_UART_CFG_REG_TIMEOUT_MASK);
+    return;
 }
 
-void EF_UART_setConfig(uint32_t uart_base, int value){
+static void EF_UART_setConfig(uint32_t value){
 
-    EF_UART_REGS* uart = (EF_UART_REGS*)uart_base;
-
-    uart->CFG = value;
+    EF_UART_REG_SPACE->CFG = value;
+    return;
 }
 
-int EF_UART_getConfig(uint32_t uart_base){
+static uint32_t EF_UART_getConfig(void){
 
-    EF_UART_REGS* uart = (EF_UART_REGS*)uart_base;
-    return (uart->CFG);
+    return (EF_UART_REG_SPACE->CFG);
+    return;
 }
 
-void EF_UART_setRxFIFOThreshold(uint32_t uart_base, int value){
+static void EF_UART_setRxFIFOThreshold(uint32_t value){
 
-    EF_UART_REGS* uart = (EF_UART_REGS*)uart_base;
-
-    uart->RX_FIFO_THRESHOLD = value;
+    EF_UART_REG_SPACE->RX_FIFO_THRESHOLD = value;
+    return;
 }
 
-int EF_UART_getRxFIFOThreshold(uint32_t uart_base){
+static uint32_t EF_UART_getRxFIFOThreshold(void){
 
-     EF_UART_REGS* uart = (EF_UART_REGS*)uart_base;
-
-    return (uart->RX_FIFO_THRESHOLD);
-
+    return (EF_UART_REG_SPACE->RX_FIFO_THRESHOLD);
 }
 
-void EF_UART_setTxFIFOThreshold(uint32_t uart_base, int value){
+static void EF_UART_setTxFIFOThreshold(uint32_t value){
 
-    EF_UART_REGS* uart = (EF_UART_REGS*)uart_base;
-
-    uart->TX_FIFO_THRESHOLD=value;
+    EF_UART_REG_SPACE->TX_FIFO_THRESHOLD=value;
+    return;
 }
 
-int EF_UART_getTxFIFOThreshold(uint32_t uart_base){
+static uint32_t EF_UART_getTxFIFOThreshold(void){
 
-    EF_UART_REGS* uart = (EF_UART_REGS*)uart_base;
-
-    return (uart->TX_FIFO_THRESHOLD);
-
+    return (EF_UART_REG_SPACE->TX_FIFO_THRESHOLD);
 }
 
 
-int EF_UART_getTxCount(uint32_t uart_base){
+static uint32_t EF_UART_getTxCount(void){
 
-    EF_UART_REGS* uart = (EF_UART_REGS*)uart_base;
-
-    return(uart->TX_FIFO_LEVEL);
+    return(EF_UART_REG_SPACE->TX_FIFO_LEVEL);
 }
 
-int EF_UART_getRxCount(uint32_t uart_base){
+static uint32_t EF_UART_getRxCount(void){
 
-    EF_UART_REGS* uart = (EF_UART_REGS*)uart_base;
-
-    return(uart->RX_FIFO_LEVEL);
+    return(EF_UART_REG_SPACE->RX_FIFO_LEVEL);
 }
 
 
-void EF_UART_setMatchData(uint32_t uart_base, int matchData){
+static void EF_UART_setMatchData(uint32_t matchData){
 
-    EF_UART_REGS* uart = (EF_UART_REGS*)uart_base;
-
-    uart->MATCH = matchData;
+    EF_UART_REG_SPACE->MATCH = matchData;
+    return;
 }
 
-int EF_UART_getMatchData(uint32_t uart_base){
 
-    EF_UART_REGS* uart = (EF_UART_REGS*)uart_base;
-    return (uart->MATCH);
+static uint32_t EF_UART_getMatchData(void){
+
+    return (EF_UART_REG_SPACE->MATCH);
 }
 
  // Interrupts bits in RIS, MIS, IM, and ICR
@@ -257,53 +265,50 @@ int EF_UART_getMatchData(uint32_t uart_base){
  // bit 8: overrun 
  // bit 9: timeout 
 
-int EF_UART_getRIS(uint32_t uart_base){
+static uint32_t EF_UART_getRIS(void){
 
-    EF_UART_REGS* uart = (EF_UART_REGS*)uart_base;
-    return (uart->RIS);
+    return (EF_UART_REG_SPACE->RIS);
 }
 
-int EF_UART_getMIS(uint32_t uart_base){
+static uint32_t EF_UART_getMIS(void){
 
-    EF_UART_REGS* uart = (EF_UART_REGS*)uart_base;
-    return (uart->MIS);
+    return (EF_UART_REG_SPACE->MIS);
 }
 
-void EF_UART_setIM(uint32_t uart_base, int mask){
-   
-    EF_UART_REGS* uart = (EF_UART_REGS*)uart_base;
-    uart->IM |= mask;
+static void EF_UART_setIM(uint32_t mask){
+
+    EF_UART_REG_SPACE->IM |= mask;
+    return;
 }
 
-int EF_UART_getIM(uint32_t uart_base){
+static uint32_t EF_UART_getIM(void){
 
-   EF_UART_REGS* uart = (EF_UART_REGS*)uart_base;
-    return (uart->IM);
+    return (EF_UART_REG_SPACE->IM);
 }
 
-void EF_UART_setICR(uint32_t uart_base, int mask){
+static void EF_UART_setICR(uint32_t mask){
 
-    EF_UART_REGS* uart = (EF_UART_REGS*)uart_base;
-    (uart->IC) |= mask;
+    (EF_UART_REG_SPACE->IC) |= mask;
+    return;
 }
 
 
-void EF_UART_writeChar(uint32_t uart_base, char data){
+static void EF_UART_writeChar(char data){
 
-    EF_UART_REGS* uart = (EF_UART_REGS*)uart_base;
-    while((EF_UART_getRIS(uart_base) & EF_UART_TXE_FLAG) == 0x0); // wait until TX empty flag is 1  
-    uart->TXDATA = data;
-    EF_UART_setICR(uart_base, EF_UART_TXE_FLAG);
+    while((EF_UART_getRIS() & EF_UART_TXE_FLAG) == 0x0); // wait until TX empty flag is 1  
+    EF_UART_REG_SPACE->TXDATA = data;
+    EF_UART_setICR(EF_UART_TXE_FLAG);
+    return;
 }
 
-void EF_UART_writeCharArr(uint32_t uart_base, const char *char_arr){
+static void EF_UART_writeCharArr(const char *char_arr){
 
-    EF_UART_REGS* uart = (EF_UART_REGS*)uart_base;
     while (*char_arr){
-        while((EF_UART_getRIS(uart_base) & EF_UART_TXB_FLAG) == 0x0); // wait until tx level below flag is 1
-        uart->TXDATA = (*(char_arr++));
-        EF_UART_setICR(uart_base, EF_UART_TXB_FLAG);
+        while((EF_UART_getRIS() & EF_UART_TXB_FLAG) == 0x0); // wait until tx level below flag is 1
+        EF_UART_REG_SPACE->TXDATA = (*(char_arr++));
+        EF_UART_setICR(EF_UART_TXB_FLAG);
     }
+    return;
 }
 
 /*void EF_UART_writeInt(uint32_t uart_base, char data){
@@ -314,14 +319,59 @@ void EF_UART_writeCharArr(uint32_t uart_base, const char *char_arr){
     EF_UART_setICR(uart_base, 0x2);
 }*/
 
-int EF_UART_readChar(uint32_t uart_base){
+static uint32_t EF_UART_readChar(void){
 
-    EF_UART_REGS* uart = (EF_UART_REGS*)uart_base;
-    while((EF_UART_getRIS(uart_base) & EF_UART_RXA_FLAG) == 0x0); // wait over RX fifo level above flag to be 1
-    int data = uart->RXDATA;
-    EF_UART_setICR(uart_base, EF_UART_RXA_FLAG);
+    while((EF_UART_getRIS() & EF_UART_RXA_FLAG) == 0x0); // wait over RX fifo level above flag to be 1
+    uint32_t data = EF_UART_REG_SPACE->RXDATA;
+    EF_UART_setICR(EF_UART_RXA_FLAG);
 
     return data;
 }
+
+extern EF_DRIVER_UART EF_DRIVER_UART0;
+EF_DRIVER_UART0 =  {
+    .UART_REGS = EF_UART_REG_SPACE,
+    .getVersion = EF_UART_getVersion,
+    .enable = EF_UART_enable,
+    .disable = EF_UART_disable,
+    .setGclkEnable = EF_UART_setGclkEnable,
+    .enableRx = EF_UART_enableRx,
+    .disableRx = EF_UART_disableRx,
+    .enableTx = EF_UART_enableTx,
+    .disableTx = EF_UART_disableTx,
+    .enableLoopBack = EF_UART_enableLoopBack,
+    .disableLoopBack = EF_UART_disableLoopBack,
+    .enableGlitchFilter = EF_UART_enableGlitchFilter,
+    .disableGlitchFilter = EF_UART_disableGlitchFilter,
+    .setCTRL = EF_UART_setCTRL,
+    .getCTRL = EF_UART_getCTRL,
+    .setDataSize = EF_UART_setDataSize,
+    .setTwoStopBitsSelect = EF_UART_setTwoStopBitsSelect,
+    .setParityType = EF_UART_setParityType,
+    .setTimeoutBits = EF_UART_setTimeoutBits,
+    .setConfig = EF_UART_setConfig,
+    .getConfig = EF_UART_getConfig,
+    .setRxFIFOThreshold = EF_UART_setRxFIFOThreshold,
+    .getRxFIFOThreshold = EF_UART_getRxFIFOThreshold,
+    .setTxFIFOThreshold = EF_UART_setTxFIFOThreshold,
+    .getTxFIFOThreshold = EF_UART_getTxFIFOThreshold,
+    .setMatchData = EF_UART_setMatchData,
+    .getMatchData = EF_UART_getMatchData,
+    .getTxCount = EF_UART_getTxCount,
+    .getRxCount = EF_UART_getRxCount,
+    .setPrescaler = EF_UART_setPrescaler,
+    .getPrescaler = EF_UART_getPrescaler,
+    .getRIS = EF_UART_getRIS,
+    .getMIS = EF_UART_getMIS,
+    .setIM = EF_UART_setIM,
+    .getIM = EF_UART_getIM,
+    .setICR = EF_UART_setICR,
+    .writeCharArr = EF_UART_writeCharArr,
+    .writeChar = EF_UART_writeChar,
+    .readChar = EF_UART_readChar
+};
+
+
+
 
 #endif // EF_UART_C
